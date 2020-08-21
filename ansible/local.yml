@@ -1,0 +1,102 @@
+- hosts: localhost
+  become: true
+
+  vars:
+    user: "{{ ansible_facts.env.SUDO_USER }}"
+    full_name: "Tan Nguyen"
+    email: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          34363132333730623833383965373463663734653537346330613435633562653831303563313463
+          3266373363663730333265626239616463623339373135380a616337396639306432313164636462
+          66356361393438376361653834323862646139376639333163653961303761643937356336643035
+          6637356262326238370a383438386463303734343034386134656164356263336333633033383830
+          33613530623761353037666237356463393231666535313030386463343333366534
+    gitlab_username: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          39356137383338393432313634396134366134663531636230363264363233656564626538663430
+          6538326537323930633135323638333564363539393839630a643433633333343837323438323364
+          61623232363730373938353532373538623039323539666338613430663432633362363333316236
+          6562316461333636300a383461623162326631636162386339613434393764313838663065633737
+          3238
+    gitlab_token: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          62353563326233316362643734346163623432346238323665396134326665346263613932643333
+          3339613035386635613039383064356361643365353530340a636166646461336462333834373630
+          35623361666437383161306565666162393264313731653434343164313064313739363165363730
+          6335646335633338350a356232396662613463383331393930356430366236626535323137303535
+          65356465353965336165323737386331396263616435323461333534613136356238
+
+  tasks:
+    - name: add necessary keys
+      apt_key:
+        url: "{{ item }}"
+        state: present
+      loop:
+        - https://download.docker.com/linux/ubuntu/gpg
+        - https://packages.microsoft.com/keys/microsoft.asc
+        - https://dl.google.com/linux/linux_signing_key.pub
+
+    - name: add repositories
+      apt_repository:
+        repo: "{{ item }}"
+        state: present
+        update_cache: false
+      loop:
+        - "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu focal stable"
+        - "deb [arch=amd64 trusted=yes] https://packages.microsoft.com/repos/vscode stable main"
+        - "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
+        - "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main"
+
+    - name: update apt
+      apt:
+        update_cache: yes
+
+    - name: install basic packages
+      apt: 
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - htop
+        - git
+        - zsh
+        - apt-transport-https
+        - ca-certificates
+        - software-properties-common
+        - docker-ce
+        - docker-compose
+        - code
+        - google-chrome-stable
+        - golang-go
+
+    - name: adding user [{{ user }}] to docker group  
+      user: name={{ user }}
+            group=docker
+            append=yes
+
+    - name: install ohmyzsh
+      become_user: "{{ user }}"
+      ignore_errors: yes
+      shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+    - name: install nvm
+      become_user: "{{ user }}"
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh)"
+
+    - name: set up .zshrc
+      become_user: "{{ user }}"
+      template:
+        src: zshrc
+        dest: "/home/{{ user }}/.zshrc"
+
+    - name: setup default git configuraiton
+      become_user: "{{ user }}"
+      git_config:
+        name: "{{ item.name }}"
+        scope: global
+        value: "{{ item.value }}"
+      with_items:
+        - {name: "user.email", value: "{{ email }}"}
+        - {name: "user.name", value: "{{ full_name }}"}
+        - {name: "pull.rebase", value: "true"}
+        - {name: "core.editor", value: "vim"}
