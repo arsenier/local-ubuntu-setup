@@ -46,6 +46,7 @@
         - "deb [arch=amd64 trusted=yes] https://packages.microsoft.com/repos/vscode stable main"
         - "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
         - "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main"
+        - "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main"
 
     - name: update apt
       apt:
@@ -69,6 +70,7 @@
         - google-chrome-stable
         - golang-go
         - meld
+        - ibus-bamboo
 
     - name: adding user [{{ user }}] to docker group  
       user: name={{ user }}
