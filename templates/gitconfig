@@ -1,0 +1,11 @@
+[user]
+	email = {{ email }}
+	name = {{ full_name }}
+[core]
+	editor = vim
+[pull]
+	rebase = true
+[merge]
+	tool = meld
+[url "https://{{ gitlab_username }}:{{ gitlab_token }}@gitlab.com"]
+	insteadOf = https://gitlab.com

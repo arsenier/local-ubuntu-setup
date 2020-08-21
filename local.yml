@@ -68,6 +68,7 @@
         - code
         - google-chrome-stable
         - golang-go
+        - meld
 
     - name: adding user [{{ user }}] to docker group  
       user: name={{ user }}
@@ -89,14 +90,8 @@
         src: zshrc
         dest: "/home/{{ user }}/.zshrc"
 
-    - name: setup default git configuraiton
+    - name: set git config
       become_user: "{{ user }}"
-      git_config:
-        name: "{{ item.name }}"
-        scope: global
-        value: "{{ item.value }}"
-      with_items:
-        - {name: "user.email", value: "{{ email }}"}
-        - {name: "user.name", value: "{{ full_name }}"}
-        - {name: "pull.rebase", value: "true"}
-        - {name: "core.editor", value: "vim"}
+      template:
+        src: gitconfig
+        dest: "/home/{{ user }}/.gitconfig"
