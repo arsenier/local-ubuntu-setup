@@ -38,15 +38,16 @@
 
     - name: add repositories
       apt_repository:
-        repo: "{{ item }}"
+        repo: "{{ item.repo }}"
+        filename: "{{ item.filename }}"
         state: present
         update_cache: false
-      loop:
-        - "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu focal stable"
-        - "deb [arch=amd64 trusted=yes] https://packages.microsoft.com/repos/vscode stable main"
-        - "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main"
-        - "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main"
-        - "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main"
+      with_items:
+        - { repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu focal stable", filename: "docker" }
+        - { repo: "deb [arch=amd64 trusted=yes] https://packages.microsoft.com/repos/vscode stable main", filename: "vscode" }
+        - { repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main", filename: "chrome" }
+        - { repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main", filename: "golang" }
+        - { repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main", filename: "ibus_bamboo" }
 
     - name: update apt
       apt:
