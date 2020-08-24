@@ -99,3 +99,12 @@
       template:
         src: gitconfig
         dest: "/home/{{ user }}/.gitconfig"
+
+    - name: install vscode extensions
+      become_user: "{{ user }}"
+      shell: "code --install-extension {{ item }}"
+      loop:
+        - ms-azuretools.vscode-docker
+        - golang.go
+        - dbaeumer.vscode-eslint
+        - esbenp.prettier-vscode
