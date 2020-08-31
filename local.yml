@@ -108,3 +108,6 @@
         - golang.go
         - dbaeumer.vscode-eslint
         - esbenp.prettier-vscode
+    
+    - name: hardware clock for dual boot with windows
+      shell: timedatectl set-local-rtc 1
