@@ -49,6 +49,12 @@
         - { repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main", filename: "golang" }
         - { repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main", filename: "ibus_bamboo" }
 
+    - name: update public key
+      shell: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys {{ item }}
+      loop:
+        - F6BC817356A3D45E
+        - 36ED424E9659D014
+
     - name: update apt
       apt:
         update_cache: yes
