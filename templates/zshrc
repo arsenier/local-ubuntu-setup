@@ -1,5 +1,5 @@
 export ZSH="/home/{{ user }}/.oh-my-zsh"
-ZSH_THEME="cloud"
+ZSH_THEME="robbyrussell"
 plugins=(git docker node postgres ansible golang vscode)
 source $ZSH/oh-my-zsh.sh
 
