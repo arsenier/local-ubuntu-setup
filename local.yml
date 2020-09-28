@@ -119,3 +119,6 @@
     
     - name: hardware clock for dual boot with windows
       shell: timedatectl set-local-rtc 1
+
+    - name: login into gitlab docker registry
+      shell: echo "{{ gitlab_token }}" | docker login registry.gitlab.com -u {{ gitlab_username }} --password-stdin
