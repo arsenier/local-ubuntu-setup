@@ -27,3 +27,8 @@ export XMODIFIERS=@im=ibus
 export QT_IM_MODULE=ibus
 
 export LANG=en_US.UTF-8
+
+# Python
+export PATH=$HOME/.pyenv/bin:$PATH
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"

@@ -96,6 +96,11 @@
       become_user: "{{ user }}"
       shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh)"
 
+    - name: install pyenv
+      become_user: "{{ user }}"
+      ignore_errors: yes
+      shell: curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+
     - name: set up .zshrc
       become_user: "{{ user }}"
       template:
