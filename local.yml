@@ -5,26 +5,26 @@
     user: "{{ ansible_facts.env.SUDO_USER }}"
     full_name: "Tan Nguyen"
     email: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          34363132333730623833383965373463663734653537346330613435633562653831303563313463
-          3266373363663730333265626239616463623339373135380a616337396639306432313164636462
-          66356361393438376361653834323862646139376639333163653961303761643937356336643035
-          6637356262326238370a383438386463303734343034386134656164356263336333633033383830
-          33613530623761353037666237356463393231666535313030386463343333366534
+      $ANSIBLE_VAULT;1.1;AES256
+      34363132333730623833383965373463663734653537346330613435633562653831303563313463
+      3266373363663730333265626239616463623339373135380a616337396639306432313164636462
+      66356361393438376361653834323862646139376639333163653961303761643937356336643035
+      6637356262326238370a383438386463303734343034386134656164356263336333633033383830
+      33613530623761353037666237356463393231666535313030386463343333366534
     gitlab_username: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          39356137383338393432313634396134366134663531636230363264363233656564626538663430
-          6538326537323930633135323638333564363539393839630a643433633333343837323438323364
-          61623232363730373938353532373538623039323539666338613430663432633362363333316236
-          6562316461333636300a383461623162326631636162386339613434393764313838663065633737
-          3238
+      $ANSIBLE_VAULT;1.1;AES256
+      39356137383338393432313634396134366134663531636230363264363233656564626538663430
+      6538326537323930633135323638333564363539393839630a643433633333343837323438323364
+      61623232363730373938353532373538623039323539666338613430663432633362363333316236
+      6562316461333636300a383461623162326631636162386339613434393764313838663065633737
+      3238
     gitlab_token: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          62353563326233316362643734346163623432346238323665396134326665346263613932643333
-          3339613035386635613039383064356361643365353530340a636166646461336462333834373630
-          35623361666437383161306565666162393264313731653434343164313064313739363165363730
-          6335646335633338350a356232396662613463383331393930356430366236626535323137303535
-          65356465353965336165323737386331396263616435323461333534613136356238
+      $ANSIBLE_VAULT;1.1;AES256
+      62353563326233316362643734346163623432346238323665396134326665346263613932643333
+      3339613035386635613039383064356361643365353530340a636166646461336462333834373630
+      35623361666437383161306565666162393264313731653434343164313064313739363165363730
+      6335646335633338350a356232396662613463383331393930356430366236626535323137303535
+      65356465353965336165323737386331396263616435323461333534613136356238
 
   tasks:
     - name: add necessary keys
@@ -43,11 +43,26 @@
         state: present
         update_cache: false
       with_items:
-        - { repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu focal stable", filename: "docker" }
-        - { repo: "deb [arch=amd64 trusted=yes] https://packages.microsoft.com/repos/vscode stable main", filename: "vscode" }
-        - { repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main", filename: "chrome" }
-        - { repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main", filename: "golang" }
-        - { repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main", filename: "ibus_bamboo" }
+        - {
+            repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu focal stable",
+            filename: "docker",
+          }
+        - {
+            repo: "deb [arch=amd64 trusted=yes] https://packages.microsoft.com/repos/vscode stable main",
+            filename: "vscode",
+          }
+        - {
+            repo: "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main",
+            filename: "chrome",
+          }
+        - {
+            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main",
+            filename: "golang",
+          }
+        - {
+            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main",
+            filename: "ibus_bamboo",
+          }
 
     - name: update public key
       shell: apt-key adv --keyserver keyserver.ubuntu.com --recv-keys {{ item }}
@@ -60,7 +75,7 @@
         update_cache: yes
 
     - name: install basic packages
-      apt: 
+      apt:
         name: "{{ item }}"
         state: present
       loop:
@@ -93,10 +108,10 @@
         - ibus-bamboo
         - hugo
 
-    - name: adding user [{{ user }}] to docker group  
+    - name: adding user [{{ user }}] to docker group
       user: name={{ user }}
-            group=docker
-            append=yes
+        group=docker
+        append=yes
 
     - name: install docker-compose
       shell: curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
@@ -141,7 +156,7 @@
         - dbaeumer.vscode-eslint
         - esbenp.prettier-vscode
         - ms-python.python
-    
+
     - name: hardware clock for dual boot with windows
       shell: timedatectl set-local-rtc 1
 
