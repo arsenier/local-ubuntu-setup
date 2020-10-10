@@ -108,6 +108,7 @@
         - meld
         - ibus-bamboo
         - hugo
+        - postgresql-client
 
     - name: adding user [{{ user }}] to docker group
       user: name={{ user }}
