@@ -158,6 +158,7 @@
         - dbaeumer.vscode-eslint
         - esbenp.prettier-vscode
         - ms-python.python
+        - editorconfig.editorconfig
 
     - name: hardware clock for dual boot with windows
       shell: timedatectl set-local-rtc 1
