@@ -109,6 +109,8 @@
         - ibus-bamboo
         - hugo
         - postgresql-client
+        - tmux
+        - xclip
 
     - name: adding user [{{ user }}] to docker group
       user: name={{ user }}
@@ -165,3 +167,9 @@
 
     - name: login into gitlab docker registry
       shell: echo "{{ gitlab_token }}" | docker login registry.gitlab.com -u {{ gitlab_username }} --password-stdin
+
+    - name: set tmux config
+      become_user: "{{ user }}"
+      template:
+        src: tmux.conf
+        dest: "/home/{{ user }}/.tmux.conf"
