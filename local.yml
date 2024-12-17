@@ -2,7 +2,7 @@
   become: true
 
   vars:
-    ubuntu_version: $(cat /etc/*release* | grep UBUNTU_CODENAME | cut -d'=' -f2)
+    # ubuntu_version: $(cat /etc/*release* | grep UBUNTU_CODENAME | cut -d'=' -f2)
     user: "{{ ansible_facts.env.SUDO_USER }}"
     full_name: "Arsenii Iarmolinskii"
     email: !vault |
@@ -28,6 +28,11 @@
       65356465353965336165323737386331396263616435323461333534613136356238
 
   tasks:
+
+    - name: Find ubuntu version
+      command: bash -c 'echo $(cat /etc/*release* | grep UBUNTU_CODENAME | cut -d'=' -f2)'
+      register: ubuntu_version
+
     - name: add necessary keys
       apt_key:
         url: "{{ item }}"
@@ -45,7 +50,7 @@
         update_cache: false
       with_items:
         - {
-            repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu {{ ubuntu_version }} stable",
+            repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu {{ ubuntu_version.stdout }} stable",
             filename: "docker",
           }
         - {
@@ -57,11 +62,11 @@
             filename: "chrome",
           }
         - {
-            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu {{ ubuntu_version }} main",
+            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu {{ ubuntu_version.stdout }} main",
             filename: "golang",
           }
         - {
-            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu {{ ubuntu_version }} main",
+            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu {{ ubuntu_version.stdout }} main",
             filename: "ibus_bamboo",
           }
 
