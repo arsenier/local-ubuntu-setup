@@ -2,8 +2,9 @@
   become: true
 
   vars:
+    ubuntu_version: $(cat /etc/*release* | grep UBUNTU_CODENAME | cut -d'=' -f2)
     user: "{{ ansible_facts.env.SUDO_USER }}"
-    full_name: "Tan Nguyen"
+    full_name: "Arsenii Iarmolinskii"
     email: !vault |
       $ANSIBLE_VAULT;1.1;AES256
       34363132333730623833383965373463663734653537346330613435633562653831303563313463
@@ -44,7 +45,7 @@
         update_cache: false
       with_items:
         - {
-            repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu focal stable",
+            repo: "deb [arch=amd64 trusted=yes] https://download.docker.com/linux/ubuntu {{ ubuntu_version }} stable",
             filename: "docker",
           }
         - {
@@ -56,11 +57,11 @@
             filename: "chrome",
           }
         - {
-            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu focal main",
+            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/longsleep/golang-backports/ubuntu {{ ubuntu_version }} main",
             filename: "golang",
           }
         - {
-            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu focal main",
+            repo: "deb [arch=amd64 trusted=yes] http://ppa.launchpad.net/bamboo-engine/ibus-bamboo/ubuntu {{ ubuntu_version }} main",
             filename: "ibus_bamboo",
           }
 
@@ -74,102 +75,102 @@
       apt:
         update_cache: yes
 
-    - name: install basic packages
-      apt:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - build-essential
-        - libssl-dev
-        - zlib1g-dev
-        - libbz2-dev
-        - libreadline-dev
-        - libsqlite3-dev
-        - llvm
-        - libncurses5-dev
-        - libncursesw5-dev
-        - xz-utils
-        - tk-dev
-        - libffi-dev
-        - liblzma-dev
-        - python-openssl
-        - libpq-dev
-        - curl
-        - htop
-        - git
-        - zsh
-        - apt-transport-https
-        - ca-certificates
-        - software-properties-common
-        - docker-ce
-        - code
-        - google-chrome-stable
-        - golang-go
-        - meld
-        - ibus-bamboo
-        - hugo
-        - postgresql-client
-        - tmux
-        - xclip
+    # - name: install basic packages
+    #   apt:
+    #     name: "{{ item }}"
+    #     state: present
+    #   loop:
+    #     - build-essential
+    #     - libssl-dev
+    #     - zlib1g-dev
+    #     - libbz2-dev
+    #     - libreadline-dev
+    #     - libsqlite3-dev
+    #     - llvm
+    #     - libncurses5-dev
+    #     - libncursesw5-dev
+    #     - xz-utils
+    #     - tk-dev
+    #     - libffi-dev
+    #     - liblzma-dev
+    #     - python-openssl
+    #     - libpq-dev
+    #     - curl
+    #     - htop
+    #     - git
+    #     - zsh
+    #     - apt-transport-https
+    #     - ca-certificates
+    #     - software-properties-common
+    #     - docker-ce
+    #     - code
+    #     - google-chrome-stable
+    #     - golang-go
+    #     - meld
+    #     - ibus-bamboo
+    #     - hugo
+    #     - postgresql-client
+    #     - tmux
+    #     - xclip
 
-    - name: adding user [{{ user }}] to docker group
-      user: name={{ user }}
-        group=docker
-        append=yes
+    # - name: adding user [{{ user }}] to docker group
+    #   user: name={{ user }}
+    #     group=docker
+    #     append=yes
 
-    - name: install docker-compose
-      shell: curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
+    # - name: install docker-compose
+    #   shell: curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && chmod +x /usr/local/bin/docker-compose
 
-    - name: install ohmyzsh
-      become_user: "{{ user }}"
-      ignore_errors: yes
-      shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    # - name: install ohmyzsh
+    #   become_user: "{{ user }}"
+    #   ignore_errors: yes
+    #   shell: sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-    - name: install nvm
-      become_user: "{{ user }}"
-      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh)"
+    # - name: install nvm
+    #   become_user: "{{ user }}"
+    #   shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh)"
 
-    - name: install pyenv
-      become_user: "{{ user }}"
-      ignore_errors: yes
-      shell: curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+    # - name: install pyenv
+    #   become_user: "{{ user }}"
+    #   ignore_errors: yes
+    #   shell: curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 
-    - name: install poetry
-      become_user: "{{ user }}"
-      ignore_errors: yes
-      shell: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
+    # - name: install poetry
+    #   become_user: "{{ user }}"
+    #   ignore_errors: yes
+    #   shell: curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
 
-    - name: set up .zshrc
-      become_user: "{{ user }}"
-      template:
-        src: zshrc
-        dest: "/home/{{ user }}/.zshrc"
+    # - name: set up .zshrc
+    #   become_user: "{{ user }}"
+    #   template:
+    #     src: zshrc
+    #     dest: "/home/{{ user }}/.zshrc"
 
-    - name: set git config
-      become_user: "{{ user }}"
-      template:
-        src: gitconfig
-        dest: "/home/{{ user }}/.gitconfig"
+    # - name: set git config
+    #   become_user: "{{ user }}"
+    #   template:
+    #     src: gitconfig
+    #     dest: "/home/{{ user }}/.gitconfig"
 
-    - name: install vscode extensions
-      become_user: "{{ user }}"
-      shell: "code --install-extension {{ item }}"
-      loop:
-        - ms-azuretools.vscode-docker
-        - golang.go
-        - dbaeumer.vscode-eslint
-        - esbenp.prettier-vscode
-        - ms-python.python
-        - editorconfig.editorconfig
+    # - name: install vscode extensions
+    #   become_user: "{{ user }}"
+    #   shell: "code --install-extension {{ item }}"
+    #   loop:
+    #     - ms-azuretools.vscode-docker
+    #     - golang.go
+    #     - dbaeumer.vscode-eslint
+    #     - esbenp.prettier-vscode
+    #     - ms-python.python
+    #     - editorconfig.editorconfig
 
-    - name: hardware clock for dual boot with windows
-      shell: timedatectl set-local-rtc 1
+    # - name: hardware clock for dual boot with windows
+    #   shell: timedatectl set-local-rtc 1
 
-    - name: login into gitlab docker registry
-      shell: echo "{{ gitlab_token }}" | docker login registry.gitlab.com -u {{ gitlab_username }} --password-stdin
+    # - name: login into gitlab docker registry
+    #   shell: echo "{{ gitlab_token }}" | docker login registry.gitlab.com -u {{ gitlab_username }} --password-stdin
 
-    - name: set tmux config
-      become_user: "{{ user }}"
-      template:
-        src: tmux.conf
-        dest: "/home/{{ user }}/.tmux.conf"
+    # - name: set tmux config
+    #   become_user: "{{ user }}"
+    #   template:
+    #     src: tmux.conf
+    #     dest: "/home/{{ user }}/.tmux.conf"
